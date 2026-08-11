@@ -1,0 +1,40 @@
+//
+1 Planeje as regras no papel antes de programar
+Antes de abrir o editor, liste de 8 a 12 regras que a senha vai precisar cumprir (tamanho mínimo, número, maiúscula, caractere especial, soma de dígitos, mês do ano, numeral romano, etc). Escreva cada regra como uma frase e pense em como validá-la logicamente. Isso evita que você fique reescrevendo a estrutura do código toda hora.
+2
+Crie a estrutura de pastas vazia
+Monte as pastas backend/, frontend/ e database/ sem nenhum arquivo de código ainda. Definir a organização primeiro ajuda a decidir onde cada responsabilidade vai morar: banco separado do backend, backend separado do frontend.
+3
+Modele o banco de dados MySQL primeiro
+Antes de qualquer linha de Python, escreva o CREATE DATABASE e CREATE TABLE no MySQL Workbench ou terminal. Pense em quais colunas fazem sentido pra um placar: nome do jogador, quantas regras passou, tempo gasto, data. Teste inserindo uma linha manualmente com INSERT para garantir que a tabela está certa antes de qualquer código tocar nela.
+4
+Backend: comece com UMA rota e UMA regra só
+Crie o app Flask mais simples possível: uma rota POST /api/validate que recebe uma senha e checa só a primeira regra (ex: tamanho mínimo). Teste com curl ou Postman antes de seguir. Só depois que isso funcionar, adicione a segunda regra, teste de novo, depois a terceira — regra por regra, nunca todas de uma vez.
+5
+Conecte o Flask ao MySQL
+Instale o mysql-connector-python, escreva a função de conexão e teste com uma rota simples que só lê algo do banco (ex: SELECT 1). Só depois de confirmar que a conexão funciona, implemente a rota que grava um placar de verdade.
+6
+Frontend: HTML puro, sem CSS, sem JS ainda
+Crie o index.html só com um input de texto e uma lista vazia onde as regras vão aparecer. Abra no navegador e veja se carrega. Resistir à tentação de estilizar já é importante — estrutura primeiro, aparência depois.
+7
+JS: replique a mesma lógica das regras, uma de cada vez
+No script.js, escreva um array de regras (mensagem + função de teste) espelhando o que você já fez em Python. Comece validando só a primeira regra a cada tecla digitada (evento 'input'), mostre na tela se passou ou não. Só depois de ver isso funcionando, implemente a revelação progressiva (mostrar a próxima regra quando a atual passar).
+8
+Ligue frontend e backend com fetch, e só então estilize com CSS
+Faça o JS chamar sua API Flask (fetch) para salvar o placar quando todas as regras passarem, e busque o placar salvo pra exibir numa tabela. Deixe o CSS por último — assim você não perde tempo estilizando algo que ainda vai mudar de estrutura.
+Alguns pontos importantes pra cada fase:
+
+Na regra em Python, pense sempre nesse formato — uma função que recebe a senha e devolve verdadeiro/falso:
+
+python
+def regra_tamanho_minimo(senha):
+    return len(senha) >= 5
+Todas as outras regras seguem essa mesma forma, só muda a lógica de dentro. Isso facilita colocar todas numa lista depois e percorrer com um loop, em vez de escrever um if gigante.
+
+No banco, resista à tentação de guardar a senha em si — só o tamanho dela e quantas regras ela cumpriu. Não tem motivo pra guardar senha de verdade em nenhuma tabela, nem de brincadeira.
+
+No JS, o pulo do gato do jogo original é a revelação progressiva: você não mostra todas as regras de uma vez, só mostra a próxima quando as visíveis atuais estiverem passando. Isso é um contador (quantasRegrasReveladas) que só aumenta quando todas as regras já reveladas retornam true.
+
+Erro comum: tentar fazer frontend e backend se comunicarem antes de cada um funcionar sozinho. Teste o Flask isolado com curl/Postman primeiro, teste o JS isolado (sem chamar API nenhuma) depois — só então junte os dois com fetch.
+
+Se travar em alguma etapa específica (por exemplo, "como faço a query MySQL pra pegar o top 10" ou "como faço o regex de caractere especial"), me chama que eu te ajudo só naquele pedaço, sem fazer o resto por você.
