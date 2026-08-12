@@ -38,3 +38,72 @@ No JS, o pulo do gato do jogo original é a revelação progressiva: você não 
 Erro comum: tentar fazer frontend e backend se comunicarem antes de cada um funcionar sozinho. Teste o Flask isolado com curl/Postman primeiro, teste o JS isolado (sem chamar API nenhuma) depois — só então junte os dois com fetch.
 
 Se travar em alguma etapa específica (por exemplo, "como faço a query MySQL pra pegar o top 10" ou "como faço o regex de caractere especial"), me chama que eu te ajudo só naquele pedaço, sem fazer o resto por você.
+
+BANCO DE DADOS 
+
+Boa pergunta — vou te mostrar o raciocínio, não só o resultado final.
+
+**1. Primeiro pergunte: o que eu realmente preciso guardar?**
+
+Pra esse jogo, a única coisa que precisa "sobreviver" depois que o navegador fecha é o **placar**. A senha em si, as regras, o timer rodando — tudo isso é estado temporário que vive na memória do navegador/servidor enquanto o jogo acontece. Então antes de desenhar tabelas, eu listo os fatos que quero registrar sobre cada "jogada finalizada":
+
+- quem jogou (nome)
+- quantas regras a pessoa cumpriu
+- quantas regras existiam no total (caso você adicione mais regras no futuro, os placares antigos continuam fazendo sentido)
+- tamanho da senha (só o tamanho, nunca o conteúdo)
+- quanto tempo levou
+- quando foi
+
+**2. Uma tabela só é suficiente?**
+
+Sim, nesse caso. Não tem relacionamento entre entidades diferentes (não tem "jogador" como tabela separada com login, por exemplo) — é só um registro de eventos, um por linha. Se um dia você quiser sistema de login, aí sim separaria em `usuarios` e `scores` ligados por chave estrangeira. Mas começar simples é melhor.
+
+**3. Escolher os tipos de dado certos**
+
+Isso é a parte que mais gente erra por pressa:
+
+| Campo | Tipo | Por quê |
+|---|---|---|
+| id | `INT AUTO_INCREMENT PRIMARY KEY` | identificador único, o banco gera sozinho |
+| player_name | `VARCHAR(50)` | texto curto, tamanho limitado evita abuso |
+| rules_completed | `INT` | é uma contagem, sempre número inteiro |
+| time_seconds | `INT` | idem |
+| created_at | `TIMESTAMP DEFAULT CURRENT_TIMESTAMP` | o banco preenche sozinho na hora do INSERT, você nunca precisa mandar isso do código |
+
+**4. Pensar em como você vai consultar depois**
+
+Se a ideia é mostrar um "top 10", você vai fazer `ORDER BY rules_completed DESC, time_seconds ASC LIMIT 10` com frequência. Por isso vale criar um índice nessas colunas — deixa a consulta rápida mesmo com a tabela crescendo.
+
+**5. Escrever o SQL só depois de ter decidido tudo isso**
+
+```sql
+CREATE DATABASE password_game;
+USE password_game;
+
+CREATE TABLE scores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    player_name VARCHAR(50) NOT NULL,
+    rules_completed INT NOT NULL,
+    total_rules INT NOT NULL,
+    password_length INT NOT NULL,
+    time_seconds INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_ranking ON scores (rules_completed DESC, time_seconds ASC);
+```
+
+**6. Testar antes de conectar no código**
+
+Antes de escrever uma linha de Python, eu entraria no terminal do MySQL e faria isso manualmente:
+
+```sql
+INSERT INTO scores (player_name, rules_completed, total_rules, password_length, time_seconds)
+VALUES ('teste', 12, 12, 20, 95);
+
+SELECT * FROM scores ORDER BY rules_completed DESC, time_seconds ASC LIMIT 10;
+```
+
+Se o INSERT e o SELECT funcionarem manualmente, você sabe que o problema (se houver algum depois) está no código Python, não no banco. Isso economiza muito tempo de depuração.
+
+Quer que eu explique alguma parte com mais profundidade, tipo por que usar `AUTO_INCREMENT`, ou como decidir entre `VARCHAR` e `TEXT`?
