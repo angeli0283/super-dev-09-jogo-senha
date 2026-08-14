@@ -1,0 +1,74 @@
+Vamos separar isso em três partes, porque são conceitos diferentes: conectar no banco, decidir a regra sorteada, e comparar. Fazer as três juntas de uma vez é receita pra bug difícil de achar.
+
+**Parte 1 — Conectar ao banco (testando isolado, sem misturar com o servidor ainda)**
+
+Antes de colocar isso dentro do `server.py`, teste a conexão sozinha, num arquivo separado (ex: `teste_conexao.py`):
+
+```python
+import mysql.connector
+
+# pip install mysql-connector-python (fora do ambiente, já que você não quer venv/Flask,
+# mas essa biblioteca não tem como evitar -- Python não fala com MySQL nativamente)
+conexao = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="sua_senha_mysql",
+    database="password_game"
+)
+
+cursor = conexao.cursor()
+cursor.execute("SELECT 1")
+resultado = cursor.fetchone()
+print("Conexão funcionando:", resultado)
+
+cursor.close()
+conexao.close()
+```
+
+Rode esse arquivo sozinho primeiro. Se aparecer `Conexão funcionando: (1,)`, a ligação com o banco está OK — só então mexa no `server.py`.
+
+**Parte 2 — As regras como funções, mais o "catálogo" delas**
+
+Você já tem o padrão de uma regra (`regra_tamanho_minimo`). Pra sortear, você precisa de uma lista onde cada item saiba: a função de teste **e** a mensagem que descreve a regra (pra mostrar pro jogador qual regra caiu):
+
+```python
+def regra_tamanho_minimo(senha):
+    return len(senha) >= 5
+
+def regra_tem_numero(senha):
+    return any(c.isdigit() for c in senha)
+
+# lista de dicionários -- cada um junta a função com sua descrição
+REGRAS = [
+    {"mensagem": "A senha deve ter pelo menos 5 caracteres", "teste": regra_tamanho_minimo},
+    {"mensagem": "A senha deve conter um número", "teste": regra_tem_numero},
+]
+```
+
+Repare que dentro do dicionário eu guardo a **função em si** (`regra_tamanho_minimo`, sem parênteses) — não estou chamando ela ainda, só guardando a referência pra chamar depois.
+
+**Parte 3 — Sortear qual regra vai valer**
+
+```python
+import random
+
+regra_sorteada = random.choice(REGRAS)
+print("Regra da vez:", regra_sorteada["mensagem"])
+```
+
+`random.choice()` pega um item aleatório de uma lista. Como cada item é um dicionário com `"mensagem"` e `"teste"`, você consegue tanto mostrar qual regra caiu quanto rodar a validação dela.
+
+**Parte 4 — Comparar se o usuário cumpriu**
+
+```python
+senha_usuario = "abc123"
+
+passou = regra_sorteada["teste"](senha_usuario)
+print("Passou?", passou)
+```
+
+Aqui `regra_sorteada["teste"]` é a função guardada, e `(senha_usuario)` na frente é o que efetivamente **chama** ela, passando a senha como argumento.
+
+**Uma decisão importante antes de você seguir:**
+
+Pensando no fluxo do jogo — o sorteio da regra deveria acontecer **uma vez por partida** (sorteia no início, guarda em algum lugar, e todo `/api/validate` usa a mesma regra até o jogador vencer ou você sortear outra), ou você quer sortear uma regra **nova a cada requisição**? Isso muda bastante onde esse `random.choice()` vai morar no seu código (dentro do `do_POST`, que roda toda hora, ou fora dele, guardado numa variável global que só muda quando quiser).
