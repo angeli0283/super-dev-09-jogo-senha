@@ -12,7 +12,30 @@
             <label for="senha">Escolha uma senha!!</label>
             <input type="text" id="senha">
         </div>
+
+        <ul id="listaRegras"></ul>
+
+        <div id="painelVitoria" style="display:none;">
+            <h2>Você venceu!</h2>
+            <input type="text" id="nomeJogador" placeholder="Seu nome">
+            <button id="botaoSalvar">Salvar no placar</button>
+        </div>
     </section>
+
+    <section>
+        <h2>Placar</h2>
+        <table id="tabelaPlacar">
+            <thead>
+                <tr>
+                    <th>Jogador</th>
+                    <th>Regras</th>
+                    <th>Tempo (s)</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
     <script src="assets/js/jogo.js"></script>
 </body>
 </html>
