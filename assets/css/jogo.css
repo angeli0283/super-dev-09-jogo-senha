@@ -1,0 +1,481 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+    --bg: #080b14;
+    --bg-secondary: #101526;
+    --card: rgba(18, 24, 42, 0.88);
+    --card-border: rgba(255, 255, 255, 0.08);
+
+    --primary: #7c3aed;
+    --primary-light: #a78bfa;
+    --secondary: #06b6d4;
+
+    --success: #22c55e;
+    --danger: #ef4444;
+
+    --text: #f8fafc;
+    --text-secondary: #94a3b8;
+    --input-bg: #0b1020;
+
+    --shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    padding: 40px 20px;
+
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+
+    background:
+        radial-gradient(circle at 15% 20%, rgba(124, 58, 237, 0.22), transparent 30%),
+        radial-gradient(circle at 85% 80%, rgba(6, 182, 212, 0.16), transparent 30%),
+        var(--bg);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+/* =========================
+   CONTAINER PRINCIPAL
+   ========================= */
+
+section {
+    width: min(100%, 720px);
+
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+
+    padding: 36px;
+
+    box-shadow: var(--shadow);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+/* =========================
+   TÍTULOS
+   ========================= */
+
+section:first-child {
+    position: relative;
+    overflow: hidden;
+}
+
+section:first-child::before {
+    content: "";
+
+    position: absolute;
+    width: 180px;
+    height: 180px;
+
+    top: -90px;
+    right: -60px;
+
+    background: var(--primary);
+    border-radius: 50%;
+
+    filter: blur(70px);
+    opacity: 0.35;
+}
+
+h1 {
+    position: relative;
+
+    margin-bottom: 10px;
+
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(42px, 8vw, 68px);
+    font-weight: 800;
+    text-align: center;
+
+    letter-spacing: -3px;
+
+    background: linear-gradient(
+        135deg,
+        #ffffff 10%,
+        #a78bfa 50%,
+        #22d3ee 100%
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+h1::after {
+    content: "🔐";
+
+    display: block;
+
+    font-size: 24px;
+    letter-spacing: 0;
+
+    margin-top: 4px;
+}
+
+h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    margin-bottom: 22px;
+}
+
+/* =========================
+   ÁREA DA SENHA
+   ========================= */
+
+.escreva-senha {
+    position: relative;
+    z-index: 1;
+
+    margin-top: 28px;
+}
+
+label {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: var(--text-secondary);
+
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+
+input {
+    width: 100%;
+
+    border: 1px solid rgba(167, 139, 250, 0.18);
+    border-radius: 14px;
+
+    padding: 16px 18px;
+
+    background: var(--input-bg);
+    color: var(--text);
+
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+
+    outline: none;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+}
+
+input::placeholder {
+    color: #475569;
+}
+
+input:focus {
+    border-color: var(--primary-light);
+
+    box-shadow:
+        0 0 0 4px rgba(124, 58, 237, 0.12),
+        0 0 25px rgba(124, 58, 237, 0.15);
+
+    transform: translateY(-1px);
+}
+
+/* =========================
+   REGRAS
+   ========================= */
+
+#listaRegras {
+    list-style: none;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    margin-top: 26px;
+}
+
+#listaRegras li {
+    padding: 15px 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.035);
+
+    color: var(--text-secondary);
+
+    font-size: 14px;
+    line-height: 1.5;
+
+    animation: aparecer 0.35s ease both;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+#listaRegras li:hover {
+    transform: translateX(4px);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/*
+   Regras aprovadas
+   O JS coloca o emoji ✅ no começo.
+*/
+#listaRegras li:has(> :first-child) {
+    color: var(--text);
+}
+
+/* =========================
+   PAINEL DE VITÓRIA
+   ========================= */
+
+#painelVitoria {
+    position: relative;
+
+    margin-top: 28px;
+    padding: 26px;
+
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(34, 197, 94, 0.10),
+            rgba(6, 182, 212, 0.05)
+        );
+
+    animation: vitoria 0.5s ease both;
+}
+
+#painelVitoria h2 {
+    margin-bottom: 18px;
+
+    color: var(--success);
+
+    text-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
+}
+
+#nomeJogador {
+    margin-bottom: 12px;
+}
+
+/* =========================
+   BOTÕES
+   ========================= */
+
+button {
+    width: 100%;
+
+    border: none;
+    border-radius: 14px;
+
+    padding: 15px 20px;
+
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        #5b21b6
+    );
+
+    color: white;
+
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 25px rgba(124, 58, 237, 0.25);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+
+    filter: brightness(1.12);
+
+    box-shadow:
+        0 14px 30px rgba(124, 58, 237, 0.35);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* =========================
+   PLACAR
+   ========================= */
+
+section:last-child {
+    overflow: hidden;
+}
+
+section:last-child h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+section:last-child h2::before {
+    content: "🏆";
+    font-size: 22px;
+}
+
+#tabelaPlacar {
+    width: 100%;
+
+    border-collapse: separate;
+    border-spacing: 0 8px;
+
+    font-size: 14px;
+}
+
+#tabelaPlacar thead th {
+    padding: 10px 14px;
+
+    color: var(--text-secondary);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+
+    text-align: left;
+}
+
+#tabelaPlacar tbody tr {
+    background: rgba(255, 255, 255, 0.035);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+#tabelaPlacar tbody tr:hover {
+    background: rgba(124, 58, 237, 0.09);
+    transform: scale(1.01);
+}
+
+#tabelaPlacar tbody td {
+    padding: 15px 14px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+
+    color: #cbd5e1;
+}
+
+#tabelaPlacar tbody td:first-child {
+    border-left: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 12px 0 0 12px;
+
+    color: var(--text);
+    font-weight: 600;
+}
+
+#tabelaPlacar tbody td:last-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 0 12px 12px 0;
+
+    color: var(--primary-light);
+    font-weight: 700;
+}
+
+/* =========================
+   ANIMAÇÕES
+   ========================= */
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes vitoria {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* =========================
+   RESPONSIVIDADE
+   ========================= */
+
+@media (max-width: 600px) {
+    body {
+        padding: 20px 12px;
+        gap: 16px;
+    }
+
+    section {
+        padding: 24px 18px;
+        border-radius: 20px;
+    }
+
+    h1 {
+        font-size: 48px;
+        letter-spacing: -2px;
+    }
+
+    h2 {
+        font-size: 21px;
+    }
+
+    #tabelaPlacar {
+        font-size: 12px;
+    }
+
+    #tabelaPlacar thead th,
+    #tabelaPlacar tbody td {
+        padding: 12px 8px;
+    }
+}
+
+/* =========================
+   ACESSIBILIDADE
+   ========================= */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
