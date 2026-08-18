@@ -1,42 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>pagina jogo</title>
-    <link rel="stylesheet" href="assets/css/jogo.css">
-</head>
-<body>
-    <section>
-        <h1>SENHA</h1>
-        <div class="escreva-senha">
-            <label for="senha">Escolha uma senha!!</label>
-            <input type="text" id="senha">
-        </div>
-
-        <ul id="listaRegras"></ul>
-
-        <div id="painelVitoria" style="display:none;">
-            <h2>Você venceu!</h2>
-            <input type="text" id="nomeJogador" placeholder="Seu nome">
-            <button id="botaoSalvar">Salvar no placar</button>
-        </div>
-    </section>
-
-    <section>
-        <h2>Placar</h2>
-        <table id="tabelaPlacar">
-            <thead>
-                <tr>
-                    <th>Jogador</th>
-                    <th>Regras</th>
-                    <th>Tempo (s)</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </section>
-
-    <script src="assets/js/jogo.js"></script>
-</body>
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+	<title>pagina jogo</title> 
+    <link rel="stylesheet" href="assets/css/jogo.css"> 
+</head> 
+<body> 
+    <section> 
+        <h1>SENHA</h1> 
+        <div class="escreva-senha"> 
+            <label for="senha">Escolha uma senha!!</label> 
+            <input type="text" id="senha"> 
+        </div> 
+ 
+        <ul id="listaRegras"></ul> 
+ 
+        <div id="painelVitoria" style="display:none;"> 
+            <h2>Você venceu!</h2> 
+            <input type="text" id="nomeJogador" placeholder="Seu nome"> 
+            <button id="botaoSalvar">Salvar no placar</button> 
+        </div> 
+    </section> 
+ 
+    <section> 
+    <h2>Placar</h2> 
+ 
+    <!-- Botão que abre/fecha os filtros --> 
+    <button id="botaoFiltro">⚙ Filtrar placar</button> 
+ 
+ 
+    <table id="tabelaPlacar"> 
+        <thead> 
+            <tr> 
+                <th>Jogador</th> 
+                <th>Regras</th> 
+                <th>Tempo (s)</th> 
+            </tr> 
+        </thead> 
+        <tbody> 
+            <!-- As linhas do placar serão adicionadas dinamicamente aqui -->
+        </tbody> 
+    </table> 
+</section> 
+ 
+    <script src="assets/js/jogo.js"></script> 
+</body> 
 </html>

@@ -87,7 +87,13 @@ botaoSalvar.addEventListener("click", function () {
         .then(function (resposta) {
             return resposta.json();
         })
-        .then(function () {
+        .then(function (dados) {
+            // se o servidor mandou um erro, ele vem como { erro: "..." },
+            // não como o resultado esperado -- checa isso antes de seguir
+            if (dados.erro) {
+                console.error("Servidor retornou erro ao salvar:", dados.erro);
+                return;
+            }
             carregarPlacar();
         })
         .catch(function (erro) {
@@ -101,6 +107,15 @@ function carregarPlacar() {
             return resposta.json();
         })
         .then(function (linhas) {
+            // mesma checagem: se veio { erro: "..." } em vez de uma lista,
+            // mostra a mensagem em vez de tentar rodar .forEach nela
+            if (linhas.erro) {
+                console.error("Servidor retornou erro ao carregar placar:", linhas.erro);
+                tabelaPlacarBody.innerHTML =
+                    "<tr><td colspan='3'>Erro ao carregar placar: " + linhas.erro + "</td></tr>";
+                return;
+            }
+
             tabelaPlacarBody.innerHTML = "";
 
             linhas.forEach(function (linha) {

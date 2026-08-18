@@ -10,7 +10,7 @@ import mysql.connector
 HOST = "localhost"
 PORTA = 3306
 USUARIO = "root"
-SENHA = "sua_senha_mysql"
+SENHA = "admin"
 BANCO = "password_jogo"
 
 
@@ -45,21 +45,46 @@ def salvar_resultado(jogador_nome: str, regras_completas: int, total_regras: int
     cursor.close()
     conexao.close()
 
+def listar_placar(
+    limite: int = 10,
+    ordenar_por: str = "regras",
+    ordem: str = "desc"
+):
+    """Devolve o placar com opções de ordenação."""
 
-def listar_placar(limite: int = 10):
-    """Devolve os melhores resultados, igual listar_funconarios() faz pra funcionários."""
     conexao = conectar()
-    cursor = conexao.cursor(dictionary=True)  # dictionary=True -> cada linha vira um dict
+    cursor = conexao.cursor(dictionary=True)
 
-    cursor.execute(
-        """
-        SELECT jogador_nome, regras_completas, total_regras, tempo_segundos, created_at
-        FROM scores
-        ORDER BY regras_completas DESC, tempo_segundos ASC
-        LIMIT %s
-        """,
-        (limite,),
-    )
+    # Define o campo usado na ordenação
+    campos_ordenacao = {
+        "regras": "regras_completas",
+        "tempo": "tempo_segundos",
+        "nome": "jogador_nome",
+        "data": "created_at"
+    }
+
+    campo = campos_ordenacao.get(ordenar_por, "regras_completas")
+
+    # Define a direção da ordenação
+    if ordem.lower() == "asc":
+        direcao = "ASC"
+    else:
+        direcao = "DESC"
+
+    sql = f"""
+        SELECT 
+            jogador_nome, 
+            regras_completas, 
+            total_regras, 
+            tempo_segundos, 
+            created_at 
+        FROM scores 
+        ORDER BY {campo} {direcao} 
+        LIMIT %s 
+    """
+
+    cursor.execute(sql, (limite,))
+
     resultados = cursor.fetchall()
 
     cursor.close()
